@@ -1,4 +1,4 @@
-name: Atualizar metadata do MeuFinanceiro
+name: Atualizar metadata e release do MeuFinanceiro
 
 on:
   push:
@@ -45,14 +45,13 @@ jobs:
           VERSION_NAME: ${{ steps.version.outputs.name }}
           APK_FILE: ${{ steps.apk.outputs.apk }}
         run: |
-          MIN_SUPPORTED=$((VERSION_CODE - 1))
           python3 - <<'PY'
           import json, os
           data = {
               "versionCode": int(os.environ["VERSION_CODE"]),
               "versionName": os.environ["VERSION_NAME"],
               "mandatory": False,
-              "minSupportedVersionCode": int(os.environ["VERSION_CODE"]) - 1,
+              "minSupportedVersionCode": max(1, int(os.environ["VERSION_CODE"]) - 1),
               "changelog": "Nova versão disponível com correções e melhorias.",
               "apkUrl": "https://raw.githubusercontent.com/AmandaCanto/MeuFinanceiro-Releases/main/" + os.environ["APK_FILE"],
           }
@@ -73,3 +72,25 @@ jobs:
             git commit -m "Atualiza metadata para v${{ steps.version.outputs.name }} [skip ci]"
             git push
           fi
+
+      - name: Criar ou atualizar GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+          APK_FILE: ${{ steps.apk.outputs.apk }}
+        run: |
+          TAG="v$VERSION_NAME"
+          NOTES="MeuFinanceiro $TAG\n\nAPK assinado publicado automaticamente pelo pipeline."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK_FILE" --clobber
+          else
+            gh release create "$TAG" "$APK_FILE" --title "MeuFinanceiro $TAG" --notes "$NOTES"
+          fi
+
+      - name: Resumo da publicação
+        shell: bash
+        run: |
+          echo "Versão publicada: v${{ steps.version.outputs.name }}"
+          echo "versionCode: ${{ steps.version.outputs.code }}"
+          echo "APK: ${{ steps.apk.outputs.apk }}"
