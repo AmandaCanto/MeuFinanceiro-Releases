@@ -1,0 +1,75 @@
+name: Atualizar metadata do MeuFinanceiro
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'MeuFinanceiro-v*.apk'
+
+permissions:
+  contents: write
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Localizar APK mais recente
+        id: apk
+        shell: bash
+        run: |
+          APK=$(find . -maxdepth 1 -type f -name 'MeuFinanceiro-v*.apk' | sort -V | tail -n 1)
+          test -n "$APK"
+          echo "apk=${APK#./}" >> "$GITHUB_OUTPUT"
+
+      - name: Ler versão do APK
+        id: version
+        shell: bash
+        run: |
+          AAPT=$(find "$ANDROID_HOME/build-tools" -type f -name aapt 2>/dev/null | sort -V | tail -n 1)
+          test -x "$AAPT"
+          BADGING=$($AAPT dump badging "${{ steps.apk.outputs.apk }}" | head -n 1)
+          VERSION_CODE=$(printf '%s' "$BADGING" | sed -n "s/.*versionCode='\([^']*\)'.*/\1/p")
+          VERSION_NAME=$(printf '%s' "$BADGING" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p")
+          test -n "$VERSION_CODE"
+          test -n "$VERSION_NAME"
+          echo "code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Gerar version.json
+        shell: bash
+        env:
+          VERSION_CODE: ${{ steps.version.outputs.code }}
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+          APK_FILE: ${{ steps.apk.outputs.apk }}
+        run: |
+          MIN_SUPPORTED=$((VERSION_CODE - 1))
+          python3 - <<'PY'
+          import json, os
+          data = {
+              "versionCode": int(os.environ["VERSION_CODE"]),
+              "versionName": os.environ["VERSION_NAME"],
+              "mandatory": False,
+              "minSupportedVersionCode": int(os.environ["VERSION_CODE"]) - 1,
+              "changelog": "Nova versão disponível com correções e melhorias.",
+              "apkUrl": "https://raw.githubusercontent.com/AmandaCanto/MeuFinanceiro-Releases/main/" + os.environ["APK_FILE"],
+          }
+          with open("version.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, ensure_ascii=False, indent=2)
+              f.write("\n")
+          PY
+
+      - name: Salvar metadata
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add version.json
+          if git diff --cached --quiet; then
+            echo 'Metadata já estava atualizada.'
+          else
+            git commit -m "Atualiza metadata para v${{ steps.version.outputs.name }} [skip ci]"
+            git push
+          fi
