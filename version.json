@@ -3,6 +3,6 @@
   "versionName": "1.28.5",
   "mandatory": false,
   "minSupportedVersionCode": 53,
-  "changelog": "Novo sistema de atualização dentro do app: verificação automática diária, botão para verificar manualmente e aviso com download da versão mais recente.",
+  "changelog": "Nova versão disponível com correções e melhorias.",
   "apkUrl": "https://raw.githubusercontent.com/AmandaCanto/MeuFinanceiro-Releases/main/MeuFinanceiro-v1.28.5.apk"
 }
