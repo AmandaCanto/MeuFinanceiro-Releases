@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'MeuFinanceiro-v*.apk'
+      - '.github/workflows/update-version-json.yml'
 
 permissions:
   contents: write
