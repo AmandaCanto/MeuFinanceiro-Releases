@@ -1,8 +1,8 @@
 {
-  "versionCode": 54,
-  "versionName": "1.28.5",
+  "versionCode": 55,
+  "versionName": "1.28.6",
   "mandatory": false,
-  "minSupportedVersionCode": 53,
+  "minSupportedVersionCode": 54,
   "changelog": "Nova versão disponível com correções e melhorias.",
-  "apkUrl": "https://raw.githubusercontent.com/AmandaCanto/MeuFinanceiro-Releases/main/MeuFinanceiro-v1.28.5.apk"
+  "apkUrl": "https://raw.githubusercontent.com/AmandaCanto/MeuFinanceiro-Releases/main/MeuFinanceiro-v1.28.6.apk"
 }
