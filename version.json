@@ -3,6 +3,6 @@
   "versionName": "1.28.10",
   "mandatory": false,
   "minSupportedVersionCode": 58,
-  "changelog": "Nova versão disponível com correções e melhorias.",
+  "changelog": "Agora é possível corrigir um lançamento avulso no Histórico, mudando Receita ↔ Despesa sem excluir nem recriar. O saldo da carteira, totais e relatórios são recalculados automaticamente; o histórico de desfazer é mantido.",
   "apkUrl": "https://raw.githubusercontent.com/AmandaCanto/MeuFinanceiro-Releases/main/MeuFinanceiro-v1.28.10.apk"
 }
