@@ -1,8 +1,8 @@
 {
-  "versionCode": 58,
-  "versionName": "1.28.9",
+  "versionCode": 59,
+  "versionName": "1.28.10",
   "mandatory": false,
-  "minSupportedVersionCode": 57,
-  "changelog": "Despesas fixas agora têm botão Pagar com escolha da carteira de origem e data do pagamento, inclusive antecipado. Mostra status Pago, permite editar ou desfazer e evita débito em duplicidade.",
-  "apkUrl": "https://raw.githubusercontent.com/AmandaCanto/MeuFinanceiro-Releases/main/MeuFinanceiro-v1.28.9.apk"
+  "minSupportedVersionCode": 58,
+  "changelog": "Nova versão disponível com correções e melhorias.",
+  "apkUrl": "https://raw.githubusercontent.com/AmandaCanto/MeuFinanceiro-Releases/main/MeuFinanceiro-v1.28.10.apk"
 }
